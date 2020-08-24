@@ -1,0 +1,62 @@
+{
+  "name": "universal-api",
+  "version": "1.0.0",
+  "description": "Universal API",
+  "license": "GPL-3.0-or-later",
+  "author": "Zentered <hi@zentered.co> (https://zentered.co)",
+  "contributors": [
+    "Patrick Heneise (https://github.com/PatrickHeneise)"
+  ],
+  "main": "index.js",
+  "private": false,
+  "bugs": {
+    "url": "https://github.com/zentered/universal-apps-on-cloud-run/issues"
+  },
+  "engines": {
+    "node": "^12"
+  },
+  "scripts": {
+    "start": "node index",
+    "debug": "node inspect index",
+    "dev": "nodemon index",
+    "lint": "standard --fix",
+    "test": "jest --coverage=true",
+    "watch": "jest --watch"
+  },
+  "dependencies": {
+    "bodybuilder": "^2.2.21",
+    "fastify": "^3.1.1",
+    "fastify-autoload": "^3.0.5",
+    "fastify-http-proxy": "^4.0.4",
+    "fastify-swagger": "^3.1.2",
+    "fluent-schema": "^1.0.4",
+    "http-errors": "^1.8.0"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "jest": "^26.1.0",
+    "lint-staged": "^10.2.11",
+    "nodemon": "^2.0.4",
+    "standard": "^14.3.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js}": [
+      "standard --fix",
+      "npm test -- --findRelatedTests"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  }
+}

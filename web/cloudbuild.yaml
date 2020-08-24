@@ -1,0 +1,47 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker pull eu.gcr.io/$PROJECT_ID/web:latest || exit 0
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - --build-arg
+      - _API_URL=${_API_URL}
+      - --build-arg
+      - env=production
+      - --cache-from
+      - eu.gcr.io/$PROJECT_ID/web:latest
+      - -t
+      - eu.gcr.io/$PROJECT_ID/web:$COMMIT_SHA
+      - -t
+      - eu.gcr.io/$PROJECT_ID/web:latest
+      - web/.
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'eu.gcr.io/$PROJECT_ID/web:$COMMIT_SHA']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - beta
+      - run
+      - deploy
+      - web
+      - --image=eu.gcr.io/$PROJECT_ID/web:$COMMIT_SHA
+      - --region=europe-west1
+      - --memory=512
+      - --platform=managed
+      - --allow-unauthenticated
+      - --cpu=1
+      - --max-instances=1
+      - --set-env-vars
+      # ENVIRONMENT VARIABLES
+      # ^;^ tells Google to use ';' as a separator for env vars array, since there are envs with special characters
+      - ^;^NODE_ENV=production;
+        GOOGLE_CLOUD_PROJECT=$PROJECT_ID;
+        DEBUG=${_DEBUG};
+        API_URL=${_API_URL};
+        GCLOUD_PROJECT=$PROJECT_ID
+images:
+  - 'eu.gcr.io/$PROJECT_ID/web:$COMMIT_SHA'
+  - 'eu.gcr.io/$PROJECT_ID/web:latest'

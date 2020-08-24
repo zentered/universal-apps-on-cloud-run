@@ -1,0 +1,25 @@
+defaultService: https://www.googleapis.com/compute/v1/projects/universal-apps-cloud-run-demo/global/backendServices/web-service
+hostRules:
+  - hosts:
+      - "*"
+    pathMatcher: path-matcher-1
+kind: compute#urlMap
+name: web
+pathMatchers:
+  - defaultService: https://www.googleapis.com/compute/v1/projects/universal-apps-cloud-run-demo/global/backendServices/web-service
+    name: path-matcher-1
+    pathRules:
+      - paths:
+          - /api/*
+          - /api/
+        routeAction:
+          urlRewrite:
+            pathPrefixRewrite: /
+        service: https://www.googleapis.com/compute/v1/projects/universal-apps-cloud-run-demo/global/backendServices/api-service
+      - paths:
+          - /assets/*
+        routeAction:
+          urlRewrite:
+            pathPrefixRewrite: /
+        service: https://www.googleapis.com/compute/v1/projects/universal-apps-cloud-run-demo/global/backendBuckets/assets
+selfLink: https://www.googleapis.com/compute/v1/projects/universal-apps-cloud-run-demo/global/urlMaps/web
